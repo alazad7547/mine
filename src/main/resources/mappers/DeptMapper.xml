@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dau.mine.DAO.DeptDAO">
+    <select id="users" parameterType="String" resultType="com.dau.mine.DTO.DeptDTO">
+        SELECT *
+        FROM DAU_DEPT_MST
+        WHERE dept_nm = #{dept_nm}
+    </select>
+
+    <insert id="deptInsert" parameterType="com.dau.mine.DTO.DeptDTO">
+        INSERT INTO dau_dept_mst
+        (
+            DEPT_CD,
+            DEPT_NM,
+            UPDEPT_CD,
+            TYPE
+        )
+        SELECT COUNT(*)+1,
+               #{dept_nm},
+               #{updept_cd},
+               #{type},
+        FROM DAU_DEPT_MST
+    </insert>
+</mapper>
