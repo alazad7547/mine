@@ -1,22 +1,37 @@
 package com.dau.mine.controller;
 
+import com.dau.mine.DAO.DeptDAO;
+import com.dau.mine.DTO.DeptDTO;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrganizationControllerTest {
-
-    @Test
-    public void TestDept() throws Exception {
-        OrganizationController org= new OrganizationController();
-        org.dept("경영지원본부","Division","1");
-    }
+    @Autowired
+    private DeptDAO deptDAO;
 
     @Test
     public void getList() throws Exception {
         OrganizationController org= new OrganizationController();
-        org.users("경영지원본부");
+        org.users("경영지원본부", "test");
+    }
+
+    @Test
+    public void TestDept() throws Exception {
+        OrganizationController org= new OrganizationController();
+        DeptDTO dto = new DeptDTO();
+        dto.setDept_nm("경영지원본부");
+        dto.setType("Division");
+        dto.setUpdept_cd("1");
+//        org.deptInsert();
     }
 }
