@@ -11,13 +11,13 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class DeptListDTO {
-    private String id;
-    private String code;
-    private String dept_nm;
-    private String updept_cd;
-    private String type;
-    private String member_no;
-    private String name;
-    private String manager;
-    private List<DeptListDTO> children;
+    private String id; //rowNum
+    private String code; //부서코드
+    private String dept_nm; //부서이름
+    private String updept_cd; //상위부서코드
+    private String type; //타입
+    private String member_no; //사원번호
+    private String name; //사원이름
+    private String manager; //매니저 여부
+    private List<DeptListDTO> children; //하위부서
 }
