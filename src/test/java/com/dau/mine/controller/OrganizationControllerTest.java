@@ -2,16 +2,17 @@ package com.dau.mine.controller;
 
 import com.dau.mine.DAO.DeptDAO;
 import com.dau.mine.DTO.DeptDTO;
+import com.dau.mine.DTO.DeptListDTO;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,4 +35,7 @@ class OrganizationControllerTest {
         dto.setUpdept_cd("1");
 //        org.deptInsert();
     }
+
+
+
 }

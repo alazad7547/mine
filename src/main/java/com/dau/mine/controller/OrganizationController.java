@@ -1,13 +1,20 @@
 package com.dau.mine.controller;
 
 import com.dau.mine.DAO.DeptDAO;
+import com.dau.mine.DAO.DeptListDAO;
+import com.dau.mine.DAO.MemberDAO;
 import com.dau.mine.DTO.DeptDTO;
+import com.dau.mine.DTO.DeptListDTO;
+import com.dau.mine.DTO.MemberDTO;
+import com.dau.mine.Service.OganizationService;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.annotations.Param;
 import org.mybatis.logging.Logger;
 import org.mybatis.logging.LoggerFactory;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -16,79 +23,135 @@ import java.util.*;
 @RestController
 @NoArgsConstructor
 @RequestMapping("/org")
+
 @MapperScan(basePackages="com.dau.mine.DAO")//탐색할 패키시 설정
 public class OrganizationController {
     private static final Logger log = LoggerFactory.getLogger(OrganizationController.class);
     @Autowired
     private DeptDAO deptDAO;
+    @Autowired
+    private MemberDAO memberDAO;
+    @Autowired
+    private DeptListDAO deptListDAO;
 
-    @GetMapping("/dept")
-    public void deptInsert(
-            @RequestParam(value="dept_nm",defaultValue = "")String dept_nm,
-            @RequestParam(value="type")String type,
-            @RequestParam(value="updept_cd",defaultValue = "")String updept_cd
+    @PostMapping("/dept")
+    public void DeptInsert(
+            @RequestBody DeptDTO dto
     ) throws Exception {
-        String[] typeArr = {"Company","Division","Department"};
+//        String[] typeArr = {"Company","Division","Department"};
         try {
-            DeptDTO dto = new DeptDTO();
-            dto.setUpdept_cd(updept_cd);
-            dto.setDept_nm(dept_nm);
-            dto.setType(type);
             System.out.println(dto.toString());
-            int bool = deptDAO.deptInsert(dto);
+            int bool = deptDAO.DeptInsert(dto);
             System.out.println(bool);
         }catch (SQLException e){
-            System.out.println("OrganizationController.deptInsert");
+            System.out.println("OrganizationController.DeptInsert");
             throw e;
         }
     }
 
-    @RequestMapping(value = "/dept/{dept_id}",method = RequestMethod.PUT)
-    public void deptUpdate(
-        @RequestBody DeptDTO dto,
-        @PathVariable("dept_id") String dept_cd
+    @PutMapping("/dept/{deptId}")
+    public void DeptUpdate(
+            @RequestBody DeptDTO dto,
+            @PathVariable("deptId") String dept_cd
     ) throws Exception {
         try {
-            int bool = deptDAO.deptUpdate(dto,dept_cd);
+            int bool = deptDAO.DeptUpdate(dto,dept_cd);
             //사원수정
             System.out.println(bool);
         }catch (SQLException e){
-            System.out.println("OrganizationController.deptUpdate");
+            System.out.println("OrganizationController.DeptUpdate");
             throw e;
         }
     }
 
-    @RequestMapping(value = "/dept/{dept_id}",method = RequestMethod.DELETE)
-    public void deptDelete(
-            @PathVariable("dept_id") String dept_cd
+    @DeleteMapping("/dept/{deptId}")
+    public void DeptDelete(
+            @PathVariable("deptId") String dept_cd
     ) throws Exception {
         try {
-            int bool = deptDAO.deptDelete(dept_cd);
-            //사원삭제
+            int bool = deptDAO.DeptDelete(dept_cd);
+            System.out.println(bool);
+            bool = memberDAO.MemberAllDelete(dept_cd);
             System.out.println(bool);
         }catch (SQLException e){
-            System.out.println("OrganizationController.deptDelete");
+            System.out.println("OrganizationController.DeptDelete");
             throw e;
         }
     }
 
-    @GetMapping(value = "/users")
-    public List<DeptDTO> users(
-            @RequestParam(value="dept_nm",defaultValue = "")String dept_nm,
-            @RequestParam(value="type")String type //드롭다운 버튼등으로 데이터 통제
-//            @RequestParam(value="upDept_cd")String upDept_cd //다이얼로그등으로 상위부서 선택 데이터 통제
+
+
+
+
+    @PostMapping("/member")
+    public void MemeberInsert(
+            @RequestBody MemberDTO dto
     ) throws Exception {
         try {
-            System.out.println(dept_nm);
-            Map<String,Object> param = new HashMap<String,Object>();
-            param.put("dept_nm",dept_nm);
-            param.put("type",type);
-            DeptDTO dto = new DeptDTO();
-            dto.setDept_nm("ABC회사");
-            dto.setType("Company");
-            final List<DeptDTO> deptList = deptDAO.users(dto);
-//            final List<DeptDTO> deptList = deptDAO.users();
-            return deptList;
+            if(!dto.getManager_yn().equals("Y")){
+                dto.setManager_yn("N");
+            }
+            int bool = memberDAO.MemberInsert(dto);
+
+            System.out.println(bool);
+        }catch (SQLException e){
+            System.out.println("OrganizationController.MemeberInsert");
+            throw e;
+        }
+    }
+
+    @PutMapping("/member/{memberId}")
+    public void MemberUpdate(
+            @RequestBody MemberDTO dto,
+            @PathVariable("memberId") String member_no
+    ) throws Exception {
+        try {
+            int bool = memberDAO.MemberUpdate(dto,member_no);
+            System.out.println(bool);
+        }catch (SQLException e){
+            System.out.println("OrganizationController.MemberUpdate");
+            throw e;
+        }
+    }
+
+    @DeleteMapping("/member/{memberId}")
+    public void MemberDelete(
+            @PathVariable("memberId") String member_no
+    ) throws Exception {
+        try {
+            //sssion에서
+            System.out.println(member_no);
+//            int bool = memberDAO.MemberDelete(dto,member_no);
+//            System.out.println(bool);
+        }catch (Exception e){
+            System.out.println("OrganizationController.MemberDelete");
+            throw e;
+        }
+    }
+
+    @GetMapping(value = "/organizations")
+      public List<DeptListDTO> Organizations(
+//    public JSONArray Organizations(
+            @RequestParam(value="deptCode",required = false, defaultValue = "")String dept_nm, //기준부서코드
+            @RequestParam(value="deptOnly",required = false, defaultValue = "false")boolean deptOnly,//부서원 포함 여부
+            @RequestParam(value="searchType",required = false, defaultValue = "dept")String searchType, //검색대상
+            @RequestParam(value="searchKeyword",required = false, defaultValue = "")String searchKeyword //검색어
+    ) throws Exception {
+        try {
+
+            List<DeptListDTO> deptList = new ArrayList<>();
+            if(deptOnly){
+                deptList = deptListDAO.DeptOnlyList(dept_nm,searchType,"%"+searchKeyword+"%");
+            }
+            else{
+                deptList = deptListDAO.DeptList(dept_nm,searchType,"%"+searchKeyword+"%");
+            }
+            OganizationService service = new OganizationService();
+            if(deptList.size()==0){
+                return deptList;
+            }
+            List<DeptListDTO> resultData = service.MakeGroupData(deptList);
+            return resultData;
         }catch (SQLException e){
             System.out.println("OrganizationController.dept");
             throw e;

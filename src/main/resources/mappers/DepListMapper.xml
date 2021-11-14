@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dau.mine.DAO.DeptListDAO">
+    <select id="DeptList" parameterType="String" resultType="com.dau.mine.DTO.DeptListDTO">
+        WITH TEMP_MST AS(
+            SELECT DISTINCT DDM.DEPT_CD,
+                            DDM.DEPT_NM,
+                            DDM.UPDEPT_CD,
+                            DDM.TYPE,
+                            DMM.MEMBER_NO,
+                            DMM.MEMBER_NM,
+                            DMM.MANAGER_YN
+            FROM DAU_DEPT_MST DDM
+            LEFT OUTER JOIN DAU_MEMBER_MST DMM
+            ON DDM.DEPT_CD = DMM.DEPT_CD
+        <choose>
+            <when test='!dept_nm.length() == 0'>
+                START WITH DDM.DEPT_NM = #{dept_nm}
+            </when>
+            <otherwise>
+                START WITH DDM.updept_cd IS NULL
+            </otherwise>
+        </choose>
+            CONNECT BY PRIOR DDM.dept_cd = DDM.updept_cd
+            ORDER BY TO_NUMBER(DDM.DEPT_CD),
+                     TO_NUMBER(DMM.MEMBER_NO)
+        ),
+        TEMP_LAST AS(
+            SELECT DISTINCT DEPT_CD,
+                            DEPT_NM,
+                            UPDEPT_CD,
+                            TYPE,
+                            MEMBER_NO,
+                            MEMBER_NM,
+                            MANAGER_YN
+            FROM TEMP_MST
+            <choose>
+                <when test='searchType.equals("dept")'>
+                START WITH DEPT_NM LIKE #{searchKeyword}
+                </when>
+                <otherwise>
+                START WITH MEMBER_NM LIKE #{searchKeyword}
+                </otherwise>
+            </choose>
+            CONNECT BY PRIOR UPDEPT_CD = DEPT_CD
+            ORDER BY TO_NUMBER(DEPT_CD),
+                     TO_NUMBER(MEMBER_NO)
+        )
+        SELECT ROWNUM AS ID,
+               DEPT_CD AS CODE,
+               DEPT_NM,
+               UPDEPT_CD,
+               TYPE,
+               MEMBER_NO,
+               MEMBER_NM AS NAME,
+               MANAGER_YN AS MANAGER
+        FROM TEMP_LAST
+    </select>
+
+    <select id="DeptOnlyList" parameterType="String" resultType="com.dau.mine.DTO.DeptListDTO">
+        WITH TEMP_MST AS(
+            SELECT DISTINCT DDM.DEPT_CD,
+                            DDM.DEPT_NM,
+                            DDM.UPDEPT_CD,
+                            DDM.TYPE,
+                            DMM.MEMBER_NO,
+                            DMM.MEMBER_NM,
+                            DMM.MANAGER_YN
+            FROM DAU_DEPT_MST DDM
+            LEFT OUTER JOIN DAU_MEMBER_MST DMM
+            ON DDM.DEPT_CD = DMM.DEPT_CD
+            <choose>
+                <when test='!dept_nm.length() == 0'>
+                    START WITH DDM.DEPT_NM = #{dept_nm}
+                </when>
+                <otherwise>
+                    START WITH DDM.updept_cd IS NULL
+                </otherwise>
+            </choose>
+            CONNECT BY PRIOR DDM.dept_cd = DDM.updept_cd
+            ORDER BY TO_NUMBER(DDM.DEPT_CD),
+            TO_NUMBER(DMM.MEMBER_NO)
+        ),
+        TEMP_LAST AS(
+            SELECT DISTINCT DEPT_CD,
+            DEPT_NM,
+            UPDEPT_CD,
+            TYPE
+            FROM TEMP_MST
+            <choose>
+                <when test='searchType.equals("dept")'>
+                    START WITH DEPT_NM LIKE #{searchKeyword}
+                </when>
+                <otherwise>
+                    START WITH MEMBER_NM LIKE #{searchKeyword}
+                </otherwise>
+            </choose>
+            CONNECT BY PRIOR UPDEPT_CD = DEPT_CD
+            ORDER BY TO_NUMBER(DEPT_CD)
+        )
+        SELECT ROWNUM AS ID,
+               DEPT_CD,
+               DEPT_NM,
+               UPDEPT_CD
+        FROM TEMP_LAST
+    </select>
+</mapper>
