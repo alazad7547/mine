@@ -3,10 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.dau.mine.DAO.DeptDAO">
-    <select id="users" parameterType="String" resultType="com.dau.mine.DTO.DeptDTO">
+    <select id="users" parameterType="com.dau.mine.DTO.DeptDTO" resultType="com.dau.mine.DTO.DeptDTO">
         SELECT *
         FROM DAU_DEPT_MST
-        WHERE dept_nm = #{dept_nm}
+        WHERE dept_nm = #{dto.dept_nm}
+        AND TYPE = #{dto.type}
     </select>
 
     <insert id="deptInsert" parameterType="com.dau.mine.DTO.DeptDTO">
@@ -18,9 +19,23 @@
             TYPE
         )
         SELECT COUNT(*)+1,
-               #{dept_nm},
-               #{updept_cd},
-               #{type},
+               #{dto.dept_nm},
+               #{dto.updept_cd},
+               #{dto.type}
         FROM DAU_DEPT_MST
     </insert>
+
+    <update id="deptUpdate" parameterType="com.dau.mine.DTO.DeptDTO">
+        UPDATE FROM dau_dept_mst
+        SET
+            DEPT_NM = #{dto.dept_nm},
+            UPDEPT_CD = #{dto.updept_cd},
+            TYPE = #{dto.type}
+        WHERE DEPT_CD = #{dept_cd}
+    </update>
+
+    <delete id="deptDelete" parameterType="String">
+        DELETE FROM dau_dept_mst
+        WHERE DEPT_CD = #{dept_cd}
+    </delete>
 </mapper>
