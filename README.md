@@ -8,5 +8,5 @@ Tool : IntelliJ, sqlDeveloper
 DB는 오라클을 사용하였으며 resource->application.properties 설정 파일에서 본인의 DB정보로 변경하셔야 DB에 접속가능합니다.  
 자세한 API 명세는 메일에 작성한 notion웹페이지에서 확인 가능합니다.  
 
-과제를 통해 처음으로 SPringBoot를 사용해 볼 수 있는 경험을 가질 수 있어 좋았습니다.  
+과제를 통해 처음으로 SpringBoot를 사용해 볼 수 있는 경험을 가질 수 있어 좋았습니다.  
 감사합니다. 
