@@ -3,13 +3,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.dau.mine.DAO.DeptDAO">
-    <select id="users" parameterType="com.dau.mine.DTO.DeptDTO" resultType="com.dau.mine.DTO.DeptDTO">
-        SELECT *
-        FROM DAU_DEPT_MST
-        WHERE dept_nm = #{dto.dept_nm}
-        AND TYPE = #{dto.type}
-    </select>
-
     <insert id="DeptInsert" parameterType="com.dau.mine.DTO.DeptDTO">
         INSERT INTO DAU_DEPT_MST
         (
@@ -18,7 +11,7 @@
             UPDEPT_CD,
             TYPE
         )
-        SELECT MAX(DEPT_CD)+1,
+        SELECT CASE WHEN MAX(DEPT_CD) IS NULL THEN '1' ELSE TO_CHAR(MAX(TO_NUMBER(DEPT_CD)+1)) END,
                #{dto.dept_nm},
                #{dto.updept_cd},
                #{dto.type}
@@ -26,7 +19,7 @@
     </insert>
 
     <update id="DeptUpdate" parameterType="com.dau.mine.DTO.DeptDTO">
-        UPDATE FROM DAU_DEPT_MST
+        UPDATE DAU_DEPT_MST
         SET
             DEPT_NM = #{dto.dept_nm},
             UPDEPT_CD = #{dto.updept_cd},

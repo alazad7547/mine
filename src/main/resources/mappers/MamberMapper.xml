@@ -12,7 +12,7 @@
             MANAGER_YN
         )
         SELECT #{dto.dept_cd},
-               CASE WHEN MAX(MEMBER_NO) IS NULL THEN '1' ELSE TO_CHAR(MAX(MEMBER_NO)+1) END,
+               CASE WHEN MAX(MEMBER_NO) IS NULL THEN '1' ELSE TO_CHAR(MAX(TO_NUMBER(MEMBER_NO)+1)) END,
                #{dto.member_nm},
                #{dto.manager_yn}
         FROM DAU_MEMBER_MST
