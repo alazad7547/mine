@@ -1,6 +1,8 @@
-skill : java, Spring Boot, Gradle
-JDK : 11.0.13
+skill : java, Spring Boot, Gradle  
+JDK : 11.0.13  
 DataBase : Oracle
+
+
 Tool : IntelliJ, sqlDeveloper
 
 해당 git을 pull받아 JDK버전을 11.0.13으로 수정 후 boot 내장 서버를 작동시키면 정상 작동합니다.
