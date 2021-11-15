@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OganizationService {
+public class OrganizationService {
     public List<DeptListDTO> MakeGroupData(List<DeptListDTO> deptList) throws Exception{
         String firstStr ="";
         if(deptList.get(0).getUpdept_cd() != null){

@@ -6,7 +6,7 @@ import com.dau.mine.DAO.MemberDAO;
 import com.dau.mine.DTO.DeptDTO;
 import com.dau.mine.DTO.DeptListDTO;
 import com.dau.mine.DTO.MemberDTO;
-import com.dau.mine.Service.OganizationService;
+import com.dau.mine.Service.OrganizationService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +150,7 @@ public class OrganizationController {
             else{
                 deptList = deptListDAO.DeptList(dept_nm,searchType,"%"+searchKeyword+"%");
             }
-            OganizationService service = new OganizationService();
+            OrganizationService service = new OrganizationService();
             if(deptList.size()==0){
                 if(searchType.equals("dept")){
                     throw new RuntimeException("일치하는 부서가 없습니다.");
