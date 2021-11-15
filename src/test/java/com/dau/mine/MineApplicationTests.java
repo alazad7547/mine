@@ -2,7 +2,6 @@ package com.dau.mine;
 
 import com.dau.mine.DTO.DeptListDTO;
 import com.dau.mine.Service.OganizationService;
-import com.dau.mine.controller.OrganizationController;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;

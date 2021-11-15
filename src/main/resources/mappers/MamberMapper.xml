@@ -28,9 +28,9 @@
           AND MEMBER_NO = #{member_no}
     </update>
 
-    <delete id="MemberDelete" parameterType="com.dau.mine.DTO.DeptDTO">
+    <delete id="MemberDelete" parameterType="String">
         DELETE FROM DAU_MEMBER_MST
-        WHERE DEPT_CD = #{dto.dept_cd}
+        WHERE DEPT_CD = #{dept_cd}
           AND MEMBER_NO = #{member_no}
     </delete>
 
