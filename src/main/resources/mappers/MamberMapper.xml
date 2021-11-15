@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dau.mine.DAO.MemberDAO">
+    <insert id="MemberInsert" parameterType="com.dau.mine.DTO.MemberDTO">
+        INSERT INTO DAU_MEMBER_MST
+        (
+            DEPT_CD,
+            MEMBER_NO,
+            MEMBER_NM,
+            MANAGER_YN
+        )
+        SELECT #{dto.dept_cd},
+               CASE WHEN MAX(MEMBER_NO) IS NULL THEN '1' ELSE TO_CHAR(MAX(MEMBER_NO)+1) END,
+               #{dto.member_nm},
+               #{dto.manager_yn}
+        FROM DAU_MEMBER_MST
+        WHERE DEPT_CD = #{dto.dept_cd}
+    </insert>
+
+    <update id="MemberUpdate" parameterType="com.dau.mine.DTO.DeptDTO">
+        UPDATE DAU_MEMBER_MST
+        SET
+            MEMBER_NM = #{dto.member_nm},
+            MANAGER_YN = #{dto.manager_yn}
+        WHERE DEPT_CD = #{dto.dept_cd}
+          AND MEMBER_NO = #{member_no}
+    </update>
+
+    <delete id="MemberDelete" parameterType="String">
+        DELETE FROM DAU_MEMBER_MST
+        WHERE DEPT_CD = #{dept_cd}
+          AND MEMBER_NO = #{member_no}
+    </delete>
+
+    <delete id="MemberAllDelete" parameterType="String">
+        DELETE FROM DAU_MEMBER_MST
+        WHERE DEPT_CD = #{dept_cd}
+    </delete>
+</mapper>

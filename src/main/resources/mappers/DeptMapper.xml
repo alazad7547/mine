@@ -10,23 +10,23 @@
         AND TYPE = #{dto.type}
     </select>
 
-    <insert id="deptInsert" parameterType="com.dau.mine.DTO.DeptDTO">
-        INSERT INTO dau_dept_mst
+    <insert id="DeptInsert" parameterType="com.dau.mine.DTO.DeptDTO">
+        INSERT INTO DAU_DEPT_MST
         (
             DEPT_CD,
             DEPT_NM,
             UPDEPT_CD,
             TYPE
         )
-        SELECT COUNT(*)+1,
+        SELECT MAX(DEPT_CD)+1,
                #{dto.dept_nm},
                #{dto.updept_cd},
                #{dto.type}
         FROM DAU_DEPT_MST
     </insert>
 
-    <update id="deptUpdate" parameterType="com.dau.mine.DTO.DeptDTO">
-        UPDATE FROM dau_dept_mst
+    <update id="DeptUpdate" parameterType="com.dau.mine.DTO.DeptDTO">
+        UPDATE FROM DAU_DEPT_MST
         SET
             DEPT_NM = #{dto.dept_nm},
             UPDEPT_CD = #{dto.updept_cd},
@@ -34,7 +34,7 @@
         WHERE DEPT_CD = #{dept_cd}
     </update>
 
-    <delete id="deptDelete" parameterType="String">
+    <delete id="DeptDelete" parameterType="String">
         DELETE FROM dau_dept_mst
         WHERE DEPT_CD = #{dept_cd}
     </delete>
